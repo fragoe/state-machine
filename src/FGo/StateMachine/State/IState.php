@@ -20,21 +20,21 @@ interface IState
     /**
      * Get the name of this state.
      *
-     * @return string
+     * @return string Returns the name.
      */
     public function getName();
 
     /**
      * Get the type of this state (see {@see StateTypes}).
      *
-     * @return string
+     * @return string Returns the type.
      */
     public function getType();
 
     /**
      * Get the string representation of this state.
      *
-     * @return string
+     * @return string Returns the string representation.
      */
     public function __toString();
 }

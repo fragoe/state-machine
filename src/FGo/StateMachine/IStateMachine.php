@@ -22,7 +22,7 @@ interface IStateMachine
     /**
      * Configure this state machine.
      *
-     * @param  mixed $config The configuration. The data type depends on the used config type.
+     * @param  mixed $config The configuration. The data type depends on the used configurator type.
      *
      * @return $this Returns the instance of this or a derived class.
      *
@@ -31,16 +31,16 @@ interface IStateMachine
     public function configure($config);
 
     /**
-     * Initialize the give object.
+     * Initializes the given object.
      *
      * <strong>Note:</strong><br/>
-     * If this function returns <em>false</em> this means that the given object is already
-     * in state and this state has not been changed.
+     * If this function returns <em>false</em> this means that the given object is already in state and this state
+     * has not been changed.
      *
      * @param  IStatefulObject $object The object to initialize.
      *
-     * @return bool Returns <em>true</em> if the object was initialized or <em>false</em>
-     *              if its state has not been changed.
+     * @return bool Returns <em>true</em> if the object was initialized or <em>false</em> if its state has not
+     *              been changed.
      *
      * @throws InvalidConfigurationException This exception is thrown when there was no initial state defined.
      */

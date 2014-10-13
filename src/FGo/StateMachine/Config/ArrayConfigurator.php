@@ -38,18 +38,25 @@ class ArrayConfigurator implements IConfigurator
     ];
 
     /**
-     * List of all defined states.
+     * List of all defined statuses (associative array).
      *
      * @var IState[]
      */
     protected $stateList = [];
 
     /**
-     * List of all defined transitions.
+     * List of all defined transitions (associative array).
      *
      * @var array
      */
     protected $transitionList = [];
+
+    /**
+     * The initial state.
+     *
+     * @var null|IState
+     */
+    protected $initialState = null;
 
 
 
@@ -70,6 +77,10 @@ class ArrayConfigurator implements IConfigurator
         $this->stateList = $this->loadStates($config['states']);
         $this->transitionList = $this->loadTransitions($config['transitions']);
 
+        if ($this->getInitialState() === null) {
+            throw new InvalidConfigurationException('No state is defined as the initial state.');
+        }
+
         return $this;
     }
 
@@ -82,6 +93,8 @@ class ArrayConfigurator implements IConfigurator
      */
     protected function loadStates(array $states)
     {
+        $this->initialState = null;  // reset the initial state
+
         $stateResolver = new OptionsResolver();
         $stateResolver
             ->setDefaults(['type' => StateTypes::TYPE_NORMAL])
@@ -101,7 +114,13 @@ class ArrayConfigurator implements IConfigurator
             $config = $stateResolver->resolve($config);
 
             $state = new State($name, $config['type']);
-            $stateList[] = $state;
+            if ($state->getType() === StateTypes::TYPE_INITIAL) {
+                if ($this->getInitialState() !== null) {
+                    throw new InvalidConfigurationException('Only one state can be defined as the initial state.');
+                }
+                $this->setInitialState($state);
+            }
+            $stateList[$state->getName()] = $state;
         }
 
         return $stateList;
@@ -117,13 +136,11 @@ class ArrayConfigurator implements IConfigurator
     protected function getStateByName($name)
     {
         $name = trim((string)$name);
-        foreach ($this->stateList as $state) {
-            if ($state->getName() === $name) {
-                return $state;
-            }
+        if (!isset($this->stateList[$name])) {
+            return null;
         }
 
-        return null;
+        return $this->stateList[$name];
     }
 
     /**
@@ -148,7 +165,7 @@ class ArrayConfigurator implements IConfigurator
             );
         $actionResolver = new OptionsResolver();
         $actionResolver
-            ->setRequired(['object', 'method'])
+            ->setRequired(['service', 'method'])
             ->setOptional(['arguments'])
             ->setDefaults(['arguments' => []]);
 
@@ -186,7 +203,7 @@ class ArrayConfigurator implements IConfigurator
 
             if (isset($config['action'])) {
                 $config = $actionResolver->resolve($config['action']);
-                if (!is_object($config['object'])) {
+                if (!is_object($config['service'])) {
                     throw new InvalidConfigurationException(
                         'The thing you provided as an object is not type of object.'
                     );
@@ -196,12 +213,12 @@ class ArrayConfigurator implements IConfigurator
                         'The name of the method to be invoked must not be empty.'
                     );
                 }
-                $action = new Action($config['object'], $config['method'], $config['arguments']);
+                $action = new Action($config['service'], $config['method'], $config['arguments']);
 
                 $transition->setAction($action);
             }
 
-            $transitionList[] = $transition;
+            $transitionList[$transition->getName()] = $transition;
         }
 
         return $transitionList;
@@ -221,5 +238,27 @@ class ArrayConfigurator implements IConfigurator
     public function getTransitionList()
     {
         return $this->transitionList;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getInitialState()
+    {
+        return $this->initialState;
+    }
+
+    /**
+     * Set the initial state.
+     *
+     * @param  IState $state The initial state.
+     *
+     * @return $this Returns the instance of this or a derived class.
+     */
+    protected function setInitialState(IState $state)
+    {
+        $this->initialState = $state;
+
+        return $this;
     }
 }

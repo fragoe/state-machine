@@ -27,11 +27,18 @@ interface ITransition
     public function getName();
 
     /**
-     * Check whether this transition can be applied to the given input state.
+     * Get the string representation of this transition.
+     *
+     * @return string Returns the string representation of this class.
+     */
+    public function __toString();
+
+    /**
+     * Check whether this transition can be applied for the given input state.
      *
      * @param  IState $state The state to check.
      *
-     * @return bool Returns <em>true</em> if this transition can be applied to the given
+     * @return bool Returns <em>true</em> if this transition can be applied for the given
      *              input state or <em>false> if not.
      */
     public function can(IState $state);
@@ -39,19 +46,12 @@ interface ITransition
     /**
      * Apply this transition.
      *
-     * @param  IState $inputState The input state.
+     * @param  IState $state The input state.
      *
      * @return IState Returns the result state. This also could be the previous state if the transition
      *                could not be applied.
      *
-     * @throws \Exception This exception is thrown if there is no suitable to-state.
+     * @throws \Exception This exception is thrown if there is no suitable output state.
      */
-    public function apply(IState $inputState);
-
-    /**
-     * Get the string representation of this transition.
-     *
-     * @return string
-     */
-    public function __toString();
+    public function apply(IState $state);
 }

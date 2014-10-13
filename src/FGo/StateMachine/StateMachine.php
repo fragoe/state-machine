@@ -19,6 +19,7 @@ use FGo\StateMachine\State\StateTypes;
 use FGo\StateMachine\Transition\ITransition;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+
 /**
  * This class …
  *
@@ -35,7 +36,7 @@ class StateMachine implements IStateMachine
     protected $stateList = [];
 
     /**
-     * List of all defined transitions.
+     * List of all defined transitions (associative).
      *
      * @var ITransition[]
      */
@@ -87,7 +88,7 @@ class StateMachine implements IStateMachine
     }
 
     /**
-     * Get the initial state from the state list.
+     * Get the initial state from the list of statuses.
      *
      * @return IState Returns the initial state.
      *
@@ -95,13 +96,12 @@ class StateMachine implements IStateMachine
      */
     protected function getInitialState()
     {
-        foreach ($this->stateList as $state) {
-            if ($state->getType() === StateTypes::TYPE_INITIAL) {
-                return $state;
-            }
+        $state = $this->configLoader->getInitialState();
+        if ($state === null) {
+            throw new InvalidConfigurationException('No state is defined as the initial state.');
         }
 
-        throw new InvalidConfigurationException('No state is defined as the initial state.');
+        return $state;
     }
 
     /**
@@ -135,13 +135,11 @@ class StateMachine implements IStateMachine
     protected function getTransitionByName($name)
     {
         $name = trim((string)$name);
-        foreach ($this->transitionList as $transition) {
-            if ($transition->getName() === $name) {
-                return $transition;
-            }
+        if (!isset($this->transitionList[$name])) {
+            throw new InvalidConfigurationException(sprintf('Transition "%s" is not defined.'), $name);
         }
 
-        throw new InvalidConfigurationException(sprintf('Transition "%s" is not defined.'), $name);
+        return $this->transitionList[$name];
     }
 
     /**
@@ -153,15 +151,6 @@ class StateMachine implements IStateMachine
         return $transition->can($object->getState());
     }
 
-    /**
-     * Check if an event dispatcher instance is set.
-     *
-     * @return bool Return <em>true</em> if an event dispatcher instance is set or <em>false</em> if not.
-     */
-    protected function hasEventDispatcher()
-    {
-        return ($this->eventDispatcher !== null);
-    }
     /**
      * @inheritdoc
      */

@@ -28,18 +28,18 @@ class Transition implements ITransition
     protected $name = '';
 
     /**
-     * List of possible input states.
+     * List of possible input states (associative).
      *
      * @var IState[]
      */
-    protected $inputStates = [];
+    protected $inputStatuses = [];
 
     /**
-     * List of possible output states.
+     * List of possible output states (indexed).
      *
      * @var IState[]
      */
-    protected $outputStates = [];
+    protected $outputStatuses = [];
 
     /**
      * Condition by which a decision is made about the output status.
@@ -59,24 +59,24 @@ class Transition implements ITransition
     /**
      * Initializes the new instance of this class.
      *
-     * @param string $name The name of this transition.
+     * @param  string $name The name of this transition.
+     *
+     * @return Transition Returns the new instance of this class.
      */
     public function __construct($name)
     {
         $this->setName($name);
+
+        return $this;
     }
     /**
      * @inheritdoc
      */
-    public function apply(IState $inputInputState)
+    public function apply(IState $state)
     {
-        if (!$this->hasInputState($inputInputState)) {
+        if (!$this->hasInputState($state)) {
             throw new \InvalidArgumentException(
-                sprintf(
-                    'Could not apply transition "%s" for input state "%s".',
-                    $this->getName(),
-                    $inputInputState->getName()
-                )
+                sprintf('Could not apply transition "%s" for input state "%s".', $this->getName(), $state->getName())
             );
         }
 
@@ -109,11 +109,11 @@ class Transition implements ITransition
     /**
      * Get the input state.
      *
-     * @return IState[] Returns the list of input states.
+     * @return IState[] Returns the list (an associative array) of input states.
      */
-    protected function getInputStates()
+    protected function getInputStatuses()
     {
-        return $this->inputStates;
+        return $this->inputStatuses;
     }
 
     /**
@@ -126,13 +126,7 @@ class Transition implements ITransition
      */
     protected function hasInputState(IState $state)
     {
-        foreach ($this->getInputStates() as $inputState) {
-            if ($inputState->getName() === $state->getName()) {
-                return true;
-            }
-        }
-
-        return false;
+        return isset($this->inputStatuses[$state->getName()]);
     }
 
     /**
@@ -162,7 +156,11 @@ class Transition implements ITransition
     }
 
     /**
-     * @inheritdoc
+     * Get the string representation of this transition.
+     *
+     * Currently this is the name of this transition.
+     *
+     * @return string Returns the string representation of this class.
      */
     public function __toString()
     {
@@ -187,6 +185,20 @@ class Transition implements ITransition
     protected function getAction()
     {
         return $this->action;
+    }
+
+    /**
+     * Associate an action to this transition.
+     *
+     * @param  IAction $action The action to set.
+     *
+     * @return $this Returns the instance of this or a derived class.
+     */
+    public function setAction(IAction $action)
+    {
+        $this->action = $action;
+
+        return $this;
     }
 
     /**
@@ -223,7 +235,7 @@ class Transition implements ITransition
      */
     protected function hasOutputState($condition)
     {
-        return isset($this->outputStates[(int)$condition]);
+        return isset($this->outputStatuses[(int)$condition]);
     }
 
     /**
@@ -231,7 +243,7 @@ class Transition implements ITransition
      *
      * @param  int $condition The condition for which the appropriate output status is sought.
      *
-     * @return IState|null Returns the appropriated output status or <em>null</em> if none was found.
+     * @return IState|null Returns the appropriated output state or <em>null</em> if none was found.
      */
     protected function getOutputState($condition)
     {
@@ -239,19 +251,19 @@ class Transition implements ITransition
             return null;
         }
 
-        return $this->outputStates[(int)$condition];
+        return $this->outputStatuses[(int)$condition];
     }
 
     /**
      * Add a new state to the list of input states.
      *
-     * @param IState $state The state to add.
+     * @param  IState $state The state to add.
      *
      * @return $this Returns the instance of this or a derived class.
      */
     public function addInputState(IState $state)
     {
-        $this->inputStates[] = $state;
+        $this->inputStatuses[$state->getName()] = $state;
 
         return $this;
     }
@@ -259,27 +271,13 @@ class Transition implements ITransition
     /**
      * Add a new state to the list of output states.
      *
-     * @param IState $state The state to add.
+     * @param  IState $state The state to add.
      *
      * @return $this Returns the instance of this or a derived class.
      */
     public function addOutputState(IState $state)
     {
-        $this->outputStates[] = $state;
-
-        return $this;
-    }
-
-    /**
-     * Associate an action to this transition.
-     *
-     * @param  IAction $action The action to set.
-     *
-     * @return $this Returns the instance of this or a derived class.
-     */
-    public function setAction(IAction $action)
-    {
-        $this->action = $action;
+        $this->outputStatuses[] = $state;
 
         return $this;
     }

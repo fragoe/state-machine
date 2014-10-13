@@ -11,6 +11,7 @@ namespace FGo\StateMachine;
 
 use FGo\StateMachine\Config\ArrayConfigurator;
 use FGo\StateMachine\State\IState;
+use FGo\StateMachine\State\StateTypes;
 
 /**
  * This class …
@@ -34,6 +35,8 @@ class StateMachineTest extends \PHPUnit_Framework_TestCase
      * @var AnyService|null
      */
     protected $anService = null;
+
+
 
     /**
      * @inheritdoc
@@ -74,7 +77,7 @@ class StateMachineTest extends \PHPUnit_Framework_TestCase
                     'from' => 'draft',
                     'to' => 'proposed',
                     'action' => [
-                        'object' => $this->anService,
+                        'service' => $this->anService,
                         'method' => 'methodX',
                         'arguments' => [42, 0]
                     ]
@@ -117,8 +120,8 @@ class StateMachineTest extends \PHPUnit_Framework_TestCase
 
         $this->assertTrue($this->stateMachine->apply('reject', $this->statefulObject));
 
-//        $this->assertEmpty('rejected', $this->statefulObject->getState()->getName());
-//        $this->assertEmpty(StateTypes::TYPE_FINAL, $this->statefulObject->getState()->getType());
+        $this->assertEquals('rejected', $this->statefulObject->getState()->getName());
+        $this->assertEquals(StateTypes::TYPE_FINAL, $this->statefulObject->getState()->getType());
     }
 }
 

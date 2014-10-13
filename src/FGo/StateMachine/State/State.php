@@ -32,15 +32,20 @@ class State implements IState
     protected $type = StateTypes::TYPE_NORMAL;
 
 
+
     /**
      * Initializes the new instance of this class.
      *
-     * @param string $name The name of this state.
-     * @param string $type The type of this state.
+     * @param  string $name The name of this state.
+     * @param  string $type The type of this state.
+     *
+     * @return State Returns the new instance of this class.
      */
     public function __construct($name, $type)
     {
         $this->setName($name)->setType($type);
+
+        return $this;
     }
 
     /**
@@ -58,7 +63,7 @@ class State implements IState
      * All whitespaces (or other characters) from the beginning or end of the name
      * will be stripped ({@see trim}).
      *
-     * @param string $name The name to set.
+     * @param  string $name The name to set.
      *
      * @return $this Returns the instance of this or a derived class.
      */
@@ -81,7 +86,7 @@ class State implements IState
      * Set the type of this state.
      *
      * <strong>Note:</strong><br/>
-     * This must be one of the pre-defined type (see {@see StateTypes})!
+     * This must be one of the pre-defined types (see {@see StateTypes})!
      *
      * @param  string $type The type to set.
      *
@@ -104,7 +109,11 @@ class State implements IState
     }
 
     /**
-     * @inheritdoc
+     * Get the string representation of this state.
+     *
+     * Currently this is the name of this state.
+     *
+     * @return string Returns the string representation.
      */
     public function __toString()
     {

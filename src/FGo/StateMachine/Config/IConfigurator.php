@@ -23,7 +23,7 @@ interface IConfigurator
     /**
      * Load the given config.
      *
-     * @param mixed $config The configuration to load. The data type depends on the used loader type.
+     * @param mixed $config The configuration to load. The data type depends on the used configurator type.
      */
     public function load($config);
 
@@ -40,4 +40,11 @@ interface IConfigurator
      * @return ITransition[] Returns an indexed array of all defined transitions.
      */
     public function getTransitionList();
+
+    /**
+     * Get the initial state.
+     *
+     * @return IState|null Returns the initial state or <em>null</em> if none was defined.
+     */
+    public function getInitialState();
 }

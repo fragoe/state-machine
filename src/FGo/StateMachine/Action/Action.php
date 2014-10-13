@@ -18,11 +18,11 @@ namespace FGo\StateMachine\Action;
 class Action implements IAction
 {
     /**
-     * Object that provides the method to invoke.
+     * The service that provides the method to invoke.
      *
      * @var null
      */
-    protected $object = null;
+    protected $service = null;
 
     /**
      * The method to be invoked.
@@ -40,41 +40,43 @@ class Action implements IAction
 
 
     /**
-     * Initialize a new instance of this class.
+     * Initializes the new instance of this class.
      *
-     * @param object $object    The object that provides the method to be invoked.
+     * @param object $service   The service that provides the method to be invoked.
      * @param string $method    The method to be invoked.
      * @param array  $arguments (optional; default: []) A list of arguments which are passed to the method.
+     *
+     * @return Action Returns the new instance of this class.
      */
-    public function __construct($object, $method, array $arguments = [])
+    public function __construct($service, $method, array $arguments = [])
     {
-        $this->setObject($object)->setMethod($method)->setArguments($arguments);
+        $this->setService($service)->setMethod($method)->setArguments($arguments);
+
+        return $this;
     }
     /**
-     * Get the associated object that provides the method to be invoked.
+     * Get the associated service that provides the method to be invoked.
      *
-     * @return object|null Returns the associated object or <em>null</em> if none was set.
+     * @return object|null Returns the associated service or <em>null</em> if none was set.
      */
-    protected function getObject()
+    protected function getService()
     {
-        return $this->object;
+        return $this->service;
     }
 
     /**
-     * Set the associated object that provides the method to be invoked.
+     * Set the service that provides the method to be invoked.
      *
-     * @param  object $object The object to set.
+     * @param  object $service The object to set.
      *
      * @return $this Returns the instance of this or a derived class.
      */
-    protected function setObject($object)
+    protected function setService($service)
     {
-        if (!is_object($object)) {
-            throw new \InvalidArgumentException(
-                'The thing you tried to set as action object is not type of object.'
-            );
+        if (!is_object($service)) {
+            throw new \InvalidArgumentException('The thing you tried to set as action object is not type of object.');
         }
-        $this->object = $object;
+        $this->service = $service;
 
         return $this;
     }
@@ -116,7 +118,7 @@ class Action implements IAction
     /**
      * Set the list of arguments which are passed to the method.
      *
-     * @param array $arguments The list of arguments to set.
+     * @param  array $arguments The list of arguments to set.
      *
      * @return $this Returns the instance of this or a derived class.
      */
@@ -130,7 +132,7 @@ class Action implements IAction
     /**
      * Add an arguments to the list of arguments which are passed to the method.
      *
-     * @param mixed $argument The argument to add.
+     * @param  mixed $argument The argument to add.
      *
      * @return $this Returns the instance of this or a derived class.
      */
@@ -150,6 +152,6 @@ class Action implements IAction
      */
     public function execute()
     {
-        return call_user_func_array([$this->getObject(), $this->getMethod()], $this->getArguments());
+        return call_user_func_array([$this->getService(), $this->getMethod()], $this->getArguments());
     }
 }
