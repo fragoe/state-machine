@@ -9,7 +9,7 @@
  */
 namespace FGo\StateMachine;
 
-use FGo\StateMachine\Configuration\ArrayLoader;
+use FGo\StateMachine\Config\ArrayConfigurator;
 use FGo\StateMachine\State\IState;
 
 /**
@@ -42,7 +42,7 @@ class StateMachineTest extends \PHPUnit_Framework_TestCase
     {
         parent::setUp();
 
-        $this->stateMachine = new StateMachine(new ArrayLoader());
+        $this->stateMachine = new StateMachine(new ArrayConfigurator());
         $this->statefulObject = new StatefulObject();
         $this->anService = new AnyService();
     }

@@ -106,7 +106,7 @@ class Action implements IAction
     /**
      * Get the list of arguments which are passed to the method.
      *
-     * @return array Returns the list of argments.
+     * @return array Returns the list of arguments.
      */
     public function getArguments()
     {

@@ -7,7 +7,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace FGo\StateMachine\Configuration;
+namespace FGo\StateMachine\Config;
 
 use FGo\StateMachine\State\IState;
 use FGo\StateMachine\Transition\ITransition;
@@ -18,7 +18,7 @@ use FGo\StateMachine\Transition\ITransition;
  * @author Frank Göldner <f-go@gmx.de>
  * @date   11.10.14 15:40
  */
-interface IConfigLoader
+interface IConfigurator
 {
     /**
      * Load the given config.

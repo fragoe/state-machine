@@ -9,8 +9,8 @@
  */
 namespace FGo\StateMachine;
 
-use FGo\StateMachine\Configuration\IConfigLoader;
-use FGo\StateMachine\Configuration\InvalidConfigurationException;
+use FGo\StateMachine\Config\IConfigurator;
+use FGo\StateMachine\Config\InvalidConfigurationException;
 use FGo\StateMachine\Event\StateEvent;
 use FGo\StateMachine\Event\StateMachineEvent;
 use FGo\StateMachine\Event\TransitionEvent;
@@ -42,9 +42,9 @@ class StateMachine implements IStateMachine
     protected $transitionList = [];
 
     /**
-     * Configuration loader instance.
+     * Configurator instance.
      *
-     * @var IConfigLoader
+     * @var IConfigurator
      */
     protected $configLoader = null;
 
@@ -56,16 +56,21 @@ class StateMachine implements IStateMachine
     protected $eventDispatcher = null;
 
 
+
     /**
      * Initializes the new instance of this class.
      *
-     * @param IConfigLoader            $configLoader    A config loader.
+     * @param IConfigurator            $configLoader    A config loader.
      * @param EventDispatcherInterface $eventDispatcher An event dispatcher.
+     *
+     * @return StateMachine Returns the new instance of this class.
      */
-    public function __construct(IConfigLoader $configLoader, EventDispatcherInterface $eventDispatcher = null)
+    public function __construct(IConfigurator $configLoader, EventDispatcherInterface $eventDispatcher = null)
     {
         $this->configLoader = $configLoader;
         $this->eventDispatcher = $eventDispatcher ?: new EventDispatcher();
+
+        return $this;
     }
 
     /**

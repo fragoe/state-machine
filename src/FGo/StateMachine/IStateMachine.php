@@ -9,7 +9,7 @@
  */
 namespace FGo\StateMachine;
 
-use FGo\StateMachine\Configuration\InvalidConfigurationException;
+use FGo\StateMachine\Config\InvalidConfigurationException;
 
 /**
  * This interface …
