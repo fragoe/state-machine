@@ -156,6 +156,7 @@ class StateMachine implements IStateMachine
      */
     public function apply($transition, IStatefulObject $object)
     {
+        // Check whether the transition is known
         $transition = $this->getTransitionByName($transition);
         if (!$transition->can($object->getState())) {
             throw new \InvalidArgumentException(
@@ -165,6 +166,11 @@ class StateMachine implements IStateMachine
                     $object->getState()->getName()
                 )
             );
+        }
+
+        // Check if the object is in a final state
+        if ($object->getState()->getType() === StateTypes::TYPE_FINAL) {
+            throw new \Exception('No further transitions possible because the object is in a final state.');
         }
 
         $fromState = $object->getState();

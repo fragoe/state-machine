@@ -70,6 +70,8 @@ interface IStateMachine
      * @return bool Returns <em>true</em> if the transition was successfully applied or <em>false</em> if not.
      *
      * @throws InvalidConfigurationException This exception is thrown if the requested transition is not defined.
+     * @throws \Exception This exception is thrown when no further transitions are possible because the object
+     *                    is in a final state.
      */
     public function apply($transition, IStatefulObject $object);
 }

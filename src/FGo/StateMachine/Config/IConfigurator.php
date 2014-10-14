@@ -23,19 +23,21 @@ interface IConfigurator
     /**
      * Load the given config.
      *
-     * @param mixed $config The configuration to load. The data type depends on the used configurator type.
+     * @param  mixed $config The configuration to load. The data type depends on the used configurator type.
+     *
+     * @return $this Returns the instance of this or a derived class.
      */
     public function load($config);
 
     /**
-     * Get a list of all states.
+     * Get a list of all defined statuses.
      *
      * @return IState[] Returns an indexed array of all defined states.
      */
     public function getStateList();
 
     /**
-     * Get a list of all transitions.
+     * Get a list of all defined transitions.
      *
      * @return ITransition[] Returns an indexed array of all defined transitions.
      */
