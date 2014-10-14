@@ -55,6 +55,16 @@ class Transition implements ITransition
      */
     protected $action = null;
 
+    /**
+     * Flag that indicates if this transition is the default one.
+     *
+     * <strong>Note:</strong><br/>
+     * This is required if more than one transition for a state are also possible.
+     *
+     * @var bool
+     */
+    protected $default = false;
+
 
     /**
      * Initializes the new instance of this class.
@@ -278,6 +288,29 @@ class Transition implements ITransition
     public function addOutputState(IState $state)
     {
         $this->outputStatuses[] = $state;
+
+        return $this;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function isDefault()
+    {
+        return $this->default;
+    }
+
+    /**
+     * Set the flag that indicates if this transition is the default one.
+     *
+     * <strong>Note:</strong><br/>
+     * This is required if more than one transition for a state are also possible.
+     *
+     * @return bool Returns <em>true</em> if this is the default one or <em>false</em> if not.
+     */
+    public function setDefault($status = true)
+    {
+        $this->default = (bool)$status;
 
         return $this;
     }

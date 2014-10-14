@@ -155,12 +155,14 @@ class ArrayConfigurator implements IConfigurator
         $transitionResolver = new OptionsResolver();
         $transitionResolver
             ->setRequired(['from', 'to'])
-            ->setOptional(['action'])
+            ->setOptional(['default', 'action'])
+            ->setDefaults(['default' => false])
             ->setNormalizers(
                 [
-                    'from'   => function(Options $o, $value) { $o->count(); return (array)$value; },
-                    'to'     => function(Options $o, $value) { $o->count(); return (array)$value; },
-                    'action' => function(Options $o, $value) { $o->count(); return !isset($value) ? null : (array)$value; }
+                    'from'    => function(Options $o, $value) { $o->count(); return (array)$value; },
+                    'to'      => function(Options $o, $value) { $o->count(); return (array)$value; },
+                    'default' => function(Options $o, $value) { $o->count(); return (bool)$value; },
+                    'action'  => function(Options $o, $value) { $o->count(); return !isset($value) ? null : (array)$value; }
                 ]
             );
         $actionResolver = new OptionsResolver();
@@ -200,6 +202,8 @@ class ArrayConfigurator implements IConfigurator
                 }
                 $transition->addOutputState($state);
             }
+
+            $transition->setDefault($config['default']);
 
             if (isset($config['action'])) {
                 $config = $actionResolver->resolve($config['action']);

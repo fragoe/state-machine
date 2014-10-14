@@ -54,4 +54,14 @@ interface ITransition
      * @throws \Exception This exception is thrown if there is no suitable output state.
      */
     public function apply(IState $state);
+
+    /**
+     * Check if this transition is the default one.
+     *
+     * <strong>Note:</strong><br/>
+     * This is required if more than one transition for a state are also possible.
+     *
+     * @return bool Returns <em>true</em> if it is or <em>false</em> if not.
+     */
+    public function isDefault();
 }

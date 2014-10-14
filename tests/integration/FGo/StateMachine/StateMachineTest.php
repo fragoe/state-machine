@@ -76,6 +76,7 @@ class StateMachineTest extends \PHPUnit_Framework_TestCase
                 'propose' => [
                     'from' => 'draft',
                     'to' => 'proposed',
+                    'default' => true,
                     'action' => [
                         'service' => $this->anService,
                         'method' => 'methodX',
